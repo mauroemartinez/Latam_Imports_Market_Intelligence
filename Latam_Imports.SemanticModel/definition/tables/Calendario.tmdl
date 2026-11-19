@@ -1,0 +1,81 @@
+/// Calendario continuo, del primer año con datos al último, marcado como tabla de fechas.
+table Calendario
+	lineageTag: 6554e2d7-7e41-515c-895b-49b6eabbda07
+	dataCategory: Time
+
+	/// Día.
+	column Data
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		lineageTag: a4270ea7-4308-58fe-8d71-86ec4ee348a8
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Año.
+	column Anno
+		dataType: int64
+		formatString: 0
+		lineageTag: b6f4b274-6c0d-58fc-80ac-47d5be323477
+		summarizeBy: none
+		sourceColumn: Anno
+
+		annotation SummarizationSetBy = User
+
+	/// Número de mes, para ordenar.
+	column 'N. mese'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 76bec64f-9b43-575d-b751-0517e951c9d1
+		summarizeBy: none
+		sourceColumn: N. mese
+
+		annotation SummarizationSetBy = User
+
+	/// Mes abreviado en italiano.
+	column Mese
+		dataType: string
+		lineageTag: 3dac4d32-840c-52ed-97b9-3ded9fd4dc05
+		summarizeBy: none
+		sourceColumn: Mese
+		sortByColumn: 'N. mese'
+
+		annotation SummarizationSetBy = User
+
+	/// Primer día del mes: eje continuo de los gráficos mensuales.
+	column 'Mese e anno'
+		dataType: dateTime
+		formatString: mmm yyyy
+		lineageTag: be3b47ad-9a8b-59ae-98da-bd06e449260e
+		summarizeBy: none
+		sourceColumn: Mese e anno
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Calendario = m
+		mode: import
+		queryGroup: Dimensiones
+		source =
+				let
+				    // Años completos entre la primera y la última operación
+				    Desde = #date(Date.Year(List.Min(Operaciones[Data])), 1, 1),
+				    Hasta = #date(Date.Year(List.Max(Operaciones[Data])), 12, 31),
+				    Dias = List.Dates(Desde, Duration.Days(Hasta - Desde) + 1, #duration(1, 0, 0, 0)),
+				    Tabla = Table.FromList(Dias, Splitter.SplitByNothing(), {"Data"}),
+				    Anno = Table.AddColumn(Tabla, "Anno", each Date.Year([Data]), Int64.Type),
+				    NumeroMes = Table.AddColumn(Anno, "N. mese", each Date.Month([Data]), Int64.Type),
+				    Mes = Table.AddColumn(NumeroMes, "Mese", each Text.Start(Date.MonthName([Data], "it-IT"), 3), type text),
+				    MesAnno = Table.AddColumn(Mes, "Mese e anno", each Date.StartOfMonth([Data]), type date),
+				    Tipos = Table.TransformColumnTypes(MesAnno, {{"Data", type date}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

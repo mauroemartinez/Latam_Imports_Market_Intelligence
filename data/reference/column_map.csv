@@ -1,0 +1,99 @@
+country,field,source_column
+uy,ID operazione,DUA
+uy,Data,Fecha
+uy,Codice HS,Código NCM
+uy,Importatore,Importador
+uy,Dogana,Aduana
+uy,Trasporto,Vía Transporte
+uy,Origine,País de Origen
+uy,Valore USD,U$S FOB
+uy,Kg lordi,Kgs. Brutos
+py,ID operazione,Despacho
+py,Data,Fecha Canc.
+py,Codice HS,Código NCM
+py,Importatore,Probable Importador
+py,Dogana,Aduana
+py,Trasporto,Transporte
+py,Origine,País de Origen
+py,Valore USD,U$S FOB
+py,Kg lordi,Kgs. Brutos
+pa,ID operazione,Ordinal
+pa,Data,Fecha
+pa,Codice HS,Código SA
+pa,Codice HS,Código SAC
+pa,Importatore,Importador
+pa,Dogana,Aduana
+pa,Trasporto,Vía Transporte
+pa,Trasporto,Transporte
+pa,Origine,País de Origen
+pa,Valore USD,U$S FOB
+pa,Kg lordi,Kgs. Brutos
+pe,ID operazione,DUA
+pe,Data,Fecha
+pe,Codice HS,NANDINA
+pe,Importatore,Importador
+pe,Dogana,Aduana
+pe,Trasporto,Vía Transporte
+pe,Trasporto,Transporte
+pe,Origine,País de Origen
+pe,Valore USD,U$S FOB
+pe,Kg lordi,Kgs. Brutos
+ec,ID operazione,Identificador
+ec,Data,Fecha
+ec,Codice HS,NANDINA
+ec,Importatore,Importador
+ec,Dogana,Aduana
+ec,Trasporto,Transporte
+ec,Origine,País de Origen
+ec,Valore USD,U$S FOB
+ec,Kg lordi,Kgs. Netos
+cl,ID operazione,Ordinal
+cl,Data,Fecha
+cl,Codice HS,Código SACH
+cl,Importatore,Importador
+cl,Dogana,Aduana
+cl,Trasporto,Vía Transporte
+cl,Origine,País de Origen
+cl,Valore USD,FOB U$S
+cl,Kg lordi,Kgs. Brutos
+co,ID operazione,Operación
+co,ID operazione,Nro. Declaración
+co,Data,Fecha
+co,Codice HS,NANDINA
+co,Importatore,Probable Importador
+co,Importatore,Importador
+co,Dogana,Aduana
+co,Trasporto,Vía Transporte
+co,Trasporto,Transporte
+co,Origine,País de Origen
+co,Valore USD,FOB U$S
+co,Valore USD,U$S FOB
+co,Kg lordi,Kgs. Brutos
+ar,ID operazione,Identificador
+ar,Data,Fecha
+ar,Codice HS,NCM-SIM
+ar,Importatore,Importador
+ar,Dogana,Aduana
+ar,Trasporto,Via Transporte
+ar,Origine,País de Origen
+ar,Valore USD,U$S FOB
+ar,Kg lordi,Kgs. Brutos
+br,ID operazione,Ordinal
+br,Data,Fecha
+br,Codice HS,Código NCM
+br,Importatore,Consignatario
+br,Dogana,Puerto de Destino
+br,Trasporto,Transporte
+br,Origine,País de Origen
+br,Valore USD,Valor Estimado
+br,Kg lordi,Kgs. Brutos
+mx,ID operazione,Ordinal
+mx,Data,Fecha
+mx,Codice HS,Código SA
+mx,Importatore,Importador
+mx,Dogana,Aduana
+mx,Trasporto,Transporte
+mx,Origine,País de Orígen
+mx,Origine,País de Origen
+mx,Valore USD,U$S CIF
+mx,Kg lordi,Kgs. Brutos

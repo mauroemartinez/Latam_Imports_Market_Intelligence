@@ -1,0 +1,210 @@
+cultureInfo it-IT
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "misure.fob_usd": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Misure",
+			          "ConceptualProperty": "FOB USD"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "FOB USD totale": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        },
+			        {
+			          "FOB USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "misure.bandiera_selezionata": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Misure",
+			          "ConceptualProperty": "Bandiera selezionata"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Bandiera": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "misure.origine_selezionata": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Misure",
+			          "ConceptualProperty": "Origine selezionata"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Origine": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "misure.fob_usd_m": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Misure",
+			          "ConceptualProperty": "FOB USD (M)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "FOB USD": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "misure.importatori__usd_50_000": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Misure",
+			          "ConceptualProperty": "Importatori > USD 50.000"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "> USD 50.000": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "misure.kg_lordi_m": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Misure",
+			          "ConceptualProperty": "Kg lordi (M)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Kg lordi": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "origine.paese_en": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Origine",
+			          "ConceptualProperty": "Paese (EN)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Origine": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "destinazione.paese_en": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Destinazione",
+			          "ConceptualProperty": "Paese (EN)"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Destinazione": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "destinazione.fonte": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "Destinazione",
+			          "ConceptualProperty": "Fonte"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Report Softrade": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

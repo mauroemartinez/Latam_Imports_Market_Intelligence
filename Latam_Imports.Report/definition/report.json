@@ -1,0 +1,125 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY25SU12",
+      "reportVersionAtImport": {
+        "visual": "2.5.0",
+        "report": "3.1.0",
+        "page": "2.3.0"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "GlobalAIze-Oscuro.json",
+      "reportVersionAtImport": {
+        "visual": "2.5.0",
+        "report": "3.1.0",
+        "page": "2.3.0"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          },
+          "visible": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY25SU12",
+          "path": "BaseThemes/CY25SU12.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "globalaize-mark-dark.png",
+          "path": "globalaize-mark-dark.png",
+          "type": "Image"
+        },
+        {
+          "name": "GlobalAIze-Oscuro.json",
+          "path": "GlobalAIze-Oscuro.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "globalaize-wordmark-dark.png",
+          "path": "globalaize-wordmark-dark.png",
+          "type": "Image"
+        },
+        {
+          "name": "page-clienti.png",
+          "path": "page-clienti.png",
+          "type": "Image"
+        },
+        {
+          "name": "page-evoluzione.png",
+          "path": "page-evoluzione.png",
+          "type": "Image"
+        },
+        {
+          "name": "page-generale.png",
+          "path": "page-generale.png",
+          "type": "Image"
+        },
+        {
+          "name": "page-note.png",
+          "path": "page-note.png",
+          "type": "Image"
+        },
+        {
+          "name": "page-tooltip.png",
+          "path": "page-tooltip.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true
+  }
+}

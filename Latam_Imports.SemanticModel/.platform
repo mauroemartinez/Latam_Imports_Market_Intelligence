@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Latam_Imports"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "78720415-af63-5a73-9546-d05383fc92db"
+  }
+}

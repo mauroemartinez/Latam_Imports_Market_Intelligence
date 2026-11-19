@@ -1,0 +1,47 @@
+/// Importadores, uno por país de destino. En Paraguay el nombre es probable y en Brasil y México es el consignatario del embarque.
+table Importatore
+	lineageTag: 97dc4578-29d0-5d43-ac82-cce062c6588c
+
+	/// País e importador, como clave.
+	column 'Importatore ID'
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: d749e470-8f29-5d7b-8267-02abb5f7eb5f
+		summarizeBy: none
+		sourceColumn: Importatore ID
+
+		annotation SummarizationSetBy = User
+
+	/// Nombre del importador.
+	column Importatore
+		dataType: string
+		lineageTag: 79d27bd1-23ca-5c2e-9253-b016c4bc58e0
+		summarizeBy: none
+		sourceColumn: Importatore
+
+		annotation SummarizationSetBy = User
+
+	/// Falso cuando la fuente no informa quién importó. Esos registros no cuentan como clientes potenciales.
+	column Identificato
+		dataType: boolean
+		isHidden
+		lineageTag: fe0ff52f-60d5-546f-9e05-385c5e64e100
+		summarizeBy: none
+		sourceColumn: Identificato
+
+		annotation SummarizationSetBy = User
+
+	partition Importatore = m
+		mode: import
+		queryGroup: Dimensiones
+		source =
+				let
+				    Unicos = Table.Distinct(Table.SelectColumns(Operaciones, {"Importatore ID", "Importatore"}), {"Importatore ID"}),
+				    Identificado = Table.AddColumn(Unicos, "Identificato", each [Importatore] <> "Non identificato", type logical),
+				    Tipos = Table.TransformColumnTypes(Identificado, {{"Importatore ID", type text}, {"Importatore", type text}, {"Identificato", type logical}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

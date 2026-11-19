@@ -1,0 +1,50 @@
+/// Aduanas o puertos de ingreso, uno por país de destino.
+table Dogana
+	lineageTag: 6d040523-ec8c-5c9c-905c-4c6358a06fac
+
+	/// País y aduana, como clave.
+	column 'Dogana ID'
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: 86ab1b6c-1e75-529d-9fa0-1052c1edc6be
+		summarizeBy: none
+		sourceColumn: Dogana ID
+
+		annotation SummarizationSetBy = User
+
+	/// Aduana o puerto de ingreso.
+	column Dogana
+		dataType: string
+		lineageTag: 84798232-5d9e-5561-96a9-678f585c6521
+		summarizeBy: none
+		sourceColumn: Dogana
+
+		annotation SummarizationSetBy = User
+
+	/// Aduana con su país entre paréntesis, para rotular gráficos que mezclan países.
+	column 'Dogana e paese'
+		dataType: string
+		lineageTag: abbd702e-c350-5744-b4d9-ed05e26139ca
+		summarizeBy: none
+		sourceColumn: Dogana e paese
+
+		annotation SummarizationSetBy = User
+
+	partition Dogana = m
+		mode: import
+		queryGroup: Dimensiones
+		source =
+				let
+				    Unicas = Table.Distinct(Table.SelectColumns(Operaciones, {"Dogana ID", "Dogana", "Destinazione ID"}), {"Dogana ID"}),
+				    // Nombre del país en italiano, para la etiqueta "Aduana (País)"
+				    Destinos = fnLeerCsv(Table.SelectRows(ArchivosDatos, each [Name] = "destinations.csv"){0}[Content]),
+				    Paises = Record.FromList(Destinos[country_it], Destinos[code]),
+				    Etiqueta = Table.AddColumn(Unicas, "Dogana e paese", each [Dogana] & " (" & Record.FieldOrDefault(Paises, [Destinazione ID], [Destinazione ID]) & ")", type text),
+				    Columnas = Table.SelectColumns(Etiqueta, {"Dogana ID", "Dogana", "Dogana e paese"}),
+				    Tipos = Table.TransformColumnTypes(Columnas, {{"Dogana ID", type text}, {"Dogana", type text}, {"Dogana e paese", type text}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

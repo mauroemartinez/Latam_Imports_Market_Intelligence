@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Latam_Imports"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "f84667a7-dce9-5610-8f92-060d4b68341c"
+  }
+}

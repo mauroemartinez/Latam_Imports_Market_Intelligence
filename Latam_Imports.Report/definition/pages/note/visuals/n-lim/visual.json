@@ -1,0 +1,194 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "n-lim",
+  "position": {
+    "x": 652,
+    "y": 92,
+    "z": 1100,
+    "height": 236,
+    "width": 608,
+    "tabOrder": 1100
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "Limiti dei dati",
+                    "textStyle": {
+                      "fontWeight": "bold",
+                      "fontSize": "11pt",
+                      "color": "#F0EEE9"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "I valori non sono omogenei tra paesi: CIF e valore stimato non equivalgono a FOB. Il totale generale è un ordine di grandezza, non una somma esatta.",
+                    "textStyle": {
+                      "fontSize": "9.5pt",
+                      "color": "#BBC5D1"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Brasile: solo carichi marittimi, valori stimati e base ferma a novembre 2023. La fonte avverte che provengono da fonti internazionali non ufficiali. Il consegnatario può essere uno spedizioniere.",
+                    "textStyle": {
+                      "fontSize": "9.5pt",
+                      "color": "#BBC5D1"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Paraguay: il nome dell'importatore è probabile, stimato dalla fonte.",
+                    "textStyle": {
+                      "fontSize": "9.5pt",
+                      "color": "#BBC5D1"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Uruguay: dal 23 ottobre 2020 non viene più pubblicata la dogana di ingresso.",
+                    "textStyle": {
+                      "fontSize": "9.5pt",
+                      "color": "#BBC5D1"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Ecuador: il peso è netto, perché la fonte non pubblica il peso lordo.",
+                    "textStyle": {
+                      "fontSize": "9.5pt",
+                      "color": "#BBC5D1"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dropShadow": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "12D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

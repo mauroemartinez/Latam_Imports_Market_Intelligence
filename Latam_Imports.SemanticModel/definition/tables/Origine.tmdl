@@ -1,0 +1,74 @@
+/// Países de origen de la mercadería que aparecen en los datos, con su nombre en italiano y su bandera.
+table Origine
+	lineageTag: f1f7e5d2-c666-5514-b536-5dfce9f1e83f
+
+	/// Nombre único del país en español, como clave.
+	column 'Origine ID'
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: 7671042e-3d21-5d6d-a7d3-2bcfef880536
+		summarizeBy: none
+		sourceColumn: Origine ID
+
+		annotation SummarizationSetBy = User
+
+	/// País de origen, en italiano.
+	column Origine
+		dataType: string
+		lineageTag: dc87d24d-4bd7-5ef5-8433-0cfd3ba152d3
+		summarizeBy: none
+		sourceColumn: Origine
+
+		annotation SummarizationSetBy = User
+
+	/// País de origen en inglés: lo usa el mapa para ubicarlo.
+	column 'Paese (EN)'
+		dataType: string
+		isHidden
+		lineageTag: 592a43b5-015e-5864-8a90-f52948c730e7
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: Paese (EN)
+
+		annotation SummarizationSetBy = User
+
+	/// Código ISO de dos letras. Vacío en zonas francas y orígenes no identificados.
+	column ISO
+		dataType: string
+		isHidden
+		lineageTag: b7e4b20d-ce3a-5bcc-8c27-69c01c3c1bf9
+		summarizeBy: none
+		sourceColumn: ISO
+
+		annotation SummarizationSetBy = User
+
+	/// Bandera del país, incrustada como imagen.
+	column Bandiera
+		dataType: string
+		lineageTag: 29bd1f5e-6c7d-51bb-8329-85eb36a0e3b2
+		dataCategory: ImageUrl
+		summarizeBy: none
+		sourceColumn: Bandiera
+
+		annotation SummarizationSetBy = User
+
+	partition Origine = m
+		mode: import
+		queryGroup: Dimensiones
+		source =
+				let
+				    // Un país puede venir escrito de varias formas: acá queda una fila por país
+				    Unicos = Table.Distinct(Table.SelectColumns(MapaPaises, {"country_es", "country_it", "country_en", "iso2"}), {"country_es"}),
+				    // Solo los orígenes que aparecen en los datos, para que los filtros no ofrezcan países sin operaciones
+				    Presentes = List.Buffer(List.Distinct(Operaciones[Origine ID])),
+				    ConOperaciones = Table.SelectRows(Unicos, each List.Contains(Presentes, [country_es])),
+				    ConBandera = Table.ExpandTableColumn(Table.NestedJoin(ConOperaciones, {"iso2"}, Banderas, {"iso2"}, "B", JoinKind.LeftOuter), "B", {"Bandiera"}),
+				    Nombres = Table.RenameColumns(ConBandera, {{"country_es", "Origine ID"}, {"country_it", "Origine"}, {"country_en", "Paese (EN)"}, {"iso2", "ISO"}}),
+				    Tipos = Table.TransformColumnTypes(Nombres, {{"Origine ID", type text}, {"Origine", type text}, {"Paese (EN)", type text}, {"ISO", type text}, {"Bandiera", type text}}),
+				    Orden = Table.Sort(Tipos, {{"Origine", Order.Ascending}})
+				in
+				    Orden
+
+	annotation PBI_ResultType = Table
+

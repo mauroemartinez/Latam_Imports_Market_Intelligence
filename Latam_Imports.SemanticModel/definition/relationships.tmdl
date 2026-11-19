@@ -1,0 +1,28 @@
+relationship 07ffb716-6435-5af3-ab18-77b1656e425d
+	fromColumn: Importazioni.Data
+	toColumn: Calendario.Data
+
+relationship 3e0f2561-312e-57bb-bd95-427213933d8d
+	fromColumn: Importazioni.'Destinazione ID'
+	toColumn: Destinazione.'Destinazione ID'
+
+relationship a9a46d84-ce09-5e01-a401-9b6cfc950a79
+	fromColumn: Importazioni.'Origine ID'
+	toColumn: Origine.'Origine ID'
+
+relationship b0c555cb-a4dd-52f0-8d25-04bb43ece08a
+	fromColumn: Importazioni.'Codice HS'
+	toColumn: Prodotto.'Codice HS'
+
+relationship 851180d5-eb66-5ba0-94cf-ac24acca2302
+	fromColumn: Importazioni.Trasporto
+	toColumn: Trasporto.Trasporto
+
+relationship d47644bc-9595-5089-95df-1f70ab6804c3
+	fromColumn: Importazioni.'Dogana ID'
+	toColumn: Dogana.'Dogana ID'
+
+relationship e2bc8e3b-0412-50ab-9bdf-5b7012a7b6d2
+	fromColumn: Importazioni.'Importatore ID'
+	toColumn: Importatore.'Importatore ID'
+

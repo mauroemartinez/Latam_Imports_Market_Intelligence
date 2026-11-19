@@ -1,0 +1,139 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 991.23378429332979,
+            "y": 260.92378442112249
+          },
+          "nodeIndex": "Misure",
+          "nodeLineageTag": "0b6d5cd8-00c0-5d4e-ad59-e57256348ed9",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 122.17723207379666,
+            "y": 553.670378296301
+          },
+          "nodeIndex": "Calendario",
+          "nodeLineageTag": "6554e2d7-7e41-515c-895b-49b6eabbda07",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": 204.9135805635201
+          },
+          "nodeIndex": "Destinazione",
+          "nodeLineageTag": "98b06e8c-b505-5012-82ae-9b6bb9c6a0a6",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 240.73720652325551,
+            "y": -0.01182795424779215
+          },
+          "nodeIndex": "Dogana",
+          "nodeLineageTag": "6d040523-ec8c-5c9c-905c-4c6358a06fac",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 422.9222528611524,
+            "y": 619.847568842245
+          },
+          "nodeIndex": "Importatore",
+          "nodeLineageTag": "97dc4578-29d0-5d43-ac82-cce062c6588c",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 409.21113619439353,
+            "y": 227.29695692412179
+          },
+          "nodeIndex": "Importazioni",
+          "nodeLineageTag": "b68c0dc9-ef41-565f-ade5-7f40d54235c3",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 527.386667351861,
+            "y": -50
+          },
+          "nodeIndex": "Origine",
+          "nodeLineageTag": "f1f7e5d2-c666-5514-b536-5dfce9f1e83f",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 709.9705953570251,
+            "y": 443.65735125978904
+          },
+          "nodeIndex": "Prodotto",
+          "nodeLineageTag": "ba2e95a0-6120-50d7-8ba8-a777133b7c19",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 757.23378429332968,
+            "y": 202.29611353903488
+          },
+          "nodeIndex": "Trasporto",
+          "nodeLineageTag": "0199679c-2b59-5dea-aabe-4601a7e9ebc3",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

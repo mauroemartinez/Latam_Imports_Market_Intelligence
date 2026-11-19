@@ -1,0 +1,129 @@
+/// Tabla de hechos: una fila por línea de operación de importación de las posiciones 722920, 722990 y 831190 en diez países de América Latina. Fuente: Softrade.
+table Importazioni
+	lineageTag: b68c0dc9-ef41-565f-ade5-7f40d54235c3
+
+	/// Identificador de la operación en la fuente (despacho, DUA u ordinal, según el país).
+	column 'ID operazione'
+		dataType: string
+		lineageTag: 8b961511-2eb3-5fe4-955d-3e3f8451ba44
+		summarizeBy: none
+		sourceColumn: ID operazione
+
+		annotation SummarizationSetBy = User
+
+	/// Fecha de la operación. Se relaciona con Calendario.
+	column Data
+		dataType: dateTime
+		isHidden
+		formatString: Short Date
+		lineageTag: 09946653-80ed-56a3-b758-f9087dacc4c6
+		summarizeBy: none
+		sourceColumn: Data
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// País importador (código de dos letras). Se relaciona con Destinazione.
+	column 'Destinazione ID'
+		dataType: string
+		isHidden
+		lineageTag: ed859ab7-af3c-5338-88d8-d587d798f6b2
+		summarizeBy: none
+		sourceColumn: Destinazione ID
+
+		annotation SummarizationSetBy = User
+
+	/// País de origen de la mercadería. Se relaciona con Origine.
+	column 'Origine ID'
+		dataType: string
+		isHidden
+		lineageTag: d4f1e9c2-5b9b-5142-afe6-97a9c715df59
+		summarizeBy: none
+		sourceColumn: Origine ID
+
+		annotation SummarizationSetBy = User
+
+	/// Posición arancelaria a 6 dígitos. Se relaciona con Prodotto.
+	column 'Codice HS'
+		dataType: string
+		isHidden
+		lineageTag: ece2bd75-7d71-5e64-9012-0b229aef62da
+		summarizeBy: none
+		sourceColumn: Codice HS
+
+		annotation SummarizationSetBy = User
+
+	/// Importador dentro de su país. Se relaciona con Importatore.
+	column 'Importatore ID'
+		dataType: string
+		isHidden
+		lineageTag: c39dfe52-4fbc-52b9-96a5-254de3529792
+		summarizeBy: none
+		sourceColumn: Importatore ID
+
+		annotation SummarizationSetBy = User
+
+	/// Aduana dentro de su país. Se relaciona con Dogana.
+	column 'Dogana ID'
+		dataType: string
+		isHidden
+		lineageTag: cce4649b-ac2e-5fd4-a1ff-ee13a4649cf2
+		summarizeBy: none
+		sourceColumn: Dogana ID
+
+		annotation SummarizationSetBy = User
+
+	/// Medio de transporte normalizado. Se relaciona con Trasporto.
+	column Trasporto
+		dataType: string
+		isHidden
+		lineageTag: 9a5362c4-9f05-52bc-8ecd-415a8089cd2f
+		summarizeBy: none
+		sourceColumn: Trasporto
+
+		annotation SummarizationSetBy = User
+
+	/// Valor en dólares: FOB en la mayoría de los países, CIF en México y valor estimado en Brasil (ver Destinazione[Base valore]).
+	column 'Valore USD'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: 284b9ab9-3f25-500a-9b6d-3645b73d8251
+		summarizeBy: sum
+		sourceColumn: Valore USD
+
+		annotation SummarizationSetBy = User
+
+	/// Peso bruto en kilos (peso neto en Ecuador, que no publica el bruto).
+	column 'Kg lordi'
+		dataType: double
+		isHidden
+		formatString: #,0.00
+		lineageTag: b3e1d6c0-3d17-5209-84d5-4a761cac5bdd
+		summarizeBy: sum
+		sourceColumn: Kg lordi
+
+		annotation SummarizationSetBy = User
+
+	/// Reporte de Softrade del que sale la fila.
+	column Fonte
+		dataType: string
+		lineageTag: 68469814-cc1f-5f24-942b-8888c626593d
+		summarizeBy: none
+		sourceColumn: Fonte
+
+		annotation SummarizationSetBy = User
+
+	partition Importazioni = m
+		mode: import
+		queryGroup: Hechos
+		source =
+				let
+				    // Operaciones ya armonizadas y limpias; acá solo se eligen las columnas que usa el modelo
+				    Columnas = Table.SelectColumns(Operaciones, {"ID operazione", "Data", "Destinazione ID", "Origine ID", "Codice HS", "Importatore ID", "Dogana ID", "Trasporto", "Valore USD", "Kg lordi", "Fonte"})
+				in
+				    Columnas
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,160 @@
+/// Tabla contenedora de todas las medidas del modelo.
+table Misure
+	lineageTag: 0b6d5cd8-00c0-5d4e-ad59-e57256348ed9
+
+	/// Valor importado en dólares del contexto actual. Es FOB salvo en México (CIF) y Brasil (valor estimado).
+	measure 'FOB USD' = SUM ( Importazioni[Valore USD] )
+		formatString: #,0
+		displayFolder: 1. Base
+		lineageTag: 1bba6ffd-1ef6-5a05-9ffa-c0fe806c405f
+
+	/// Peso bruto importado, en kilos.
+	measure 'Kg lordi' = SUM ( Importazioni[Kg lordi] )
+		formatString: #,0
+		displayFolder: 1. Base
+		lineageTag: b0ca0ea5-7650-512b-89ae-9b791b2f53d8
+
+	/// Valor importado con origen Italia.
+	measure 'FOB Italia' = CALCULATE ( [FOB USD], Origine[ISO] = "IT" )
+		formatString: #,0
+		displayFolder: 1. Base
+		lineageTag: a300c218-a178-5b1d-994c-7dd1ae5060ea
+
+	/// Participación en el valor total de lo que está a la vista: respeta los filtros de la página y la selección de otros gráficos.
+	measure '% FOB' = DIVIDE ( [FOB USD], CALCULATE ( [FOB USD], ALLSELECTED () ) )
+		formatString: 0.00%
+		displayFolder: 2. Quote
+		lineageTag: 14f1ef4f-a3e2-54be-8463-342d6ace503f
+
+	/// Participación en el peso total de lo que está a la vista.
+	measure '% Kg' = DIVIDE ( [Kg lordi], CALCULATE ( [Kg lordi], ALLSELECTED () ) )
+		formatString: 0.00%
+		displayFolder: 2. Quote
+		lineageTag: 9d33d43e-b839-571c-8939-ecf15e8666d6
+
+	/// Cuánto del valor del contexto actual tiene origen Italia.
+	measure '% FOB Italia' = DIVIDE ( [FOB Italia], [FOB USD] )
+		formatString: 0.00%
+		displayFolder: 2. Quote
+		lineageTag: 5f88ed72-eea6-51e8-beab-b055c34e065f
+
+	/// Clientes potenciales: importadores identificados que suman más de USD 50.000 con los filtros actuales.
+	measure 'Importatori > USD 50.000' =
+			VAR Soglia = 50000
+			VAR Identificati = CALCULATETABLE ( VALUES ( Importatore[Importatore ID] ), Importatore[Identificato] = TRUE () )
+			RETURN
+			    COUNTROWS ( FILTER ( Identificati, [FOB USD] > Soglia ) ) + 0
+		formatString: #,0
+		displayFolder: 3. Clienti potenziali
+		lineageTag: 711677e5-94ed-51e9-a1a7-01e16363fc9e
+
+	/// Cantidad de importadores identificados con operaciones en el contexto actual.
+	measure Importatori = CALCULATE ( DISTINCTCOUNT ( Importazioni[Importatore ID] ), Importatore[Identificato] = TRUE () )
+		formatString: #,0
+		displayFolder: 3. Clienti potenziali
+		lineageTag: c222b9d9-fbf9-565f-8c9c-565657c76092
+
+	/// Valor importado en el mismo período del año anterior.
+	measure 'FOB anno precedente' = CALCULATE ( [FOB USD], DATEADD ( Calendario[Data], -1, YEAR ) )
+		formatString: #,0
+		displayFolder: 4. Tempo
+		lineageTag: 1eb3ee79-3362-5031-b9e7-eb7daeef5bda
+
+	/// Variación contra el año anterior. Solo compara los destinos que tienen datos cargados en el año que se mira: si la base de un país termina antes, eso no cuenta como caída.
+	measure 'Variazione %' =
+			VAR AnnoCorrente = MAX ( Calendario[Anno] )
+			VAR Comparabili = FILTER ( Destinazione, YEAR ( Destinazione[Dati fino a] ) >= AnnoCorrente )
+			VAR Attuale = CALCULATE ( [FOB USD], Comparabili )
+			VAR Precedente = CALCULATE ( [FOB anno precedente], Comparabili )
+			RETURN
+			    IF ( HASONEVALUE ( Calendario[Anno] ) && Precedente > 0, DIVIDE ( Attuale - Precedente, Precedente ) )
+		formatString: 0.0%
+		displayFolder: 4. Tempo
+		lineageTag: 2dcd9ce7-5e7b-552d-8c04-fd5094d0b51c
+
+	/// Variación contra el año anterior como texto con flecha. Muestra un guion cuando no hay año anterior con el que comparar.
+	measure Variazione =
+			VAR V = [Variazione %]
+			// El guion solo aparece en filas que tienen datos en algún año de la selección, para no crear filas vacías
+			VAR ConDati = NOT ISBLANK ( CALCULATE ( [FOB USD], ALLSELECTED ( Calendario ) ) )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        NOT ISBLANK ( V ), IF ( V >= 0, "▲ ", "▼ " ) & FORMAT ( V, "0.0%", "it-IT" ),
+			        ConDati, "-"
+			    )
+		displayFolder: 4. Tempo
+		lineageTag: 55b20664-3b9a-583f-8c6a-9fa2210271d2
+
+	/// Color de la variación: verde si sube, rojo si baja, gris si no hay comparación.
+	measure 'Variazione colore' =
+			VAR V = [Variazione %]
+			RETURN
+			    SWITCH ( TRUE (), ISBLANK ( V ), "#8D9AA8", V >= 0, "#62D286", "#EF6661" )
+		displayFolder: 4. Tempo
+		lineageTag: cfa8bf94-3eb7-5b14-a113-6291e1283837
+
+	/// Serie auxiliar que vale cero: deja la etiqueta de texto arriba de la barra en los gráficos de barras.
+	measure 'Posizione etichetta' = 0
+		formatString: 0
+		displayFolder: 5. Etichette
+		lineageTag: 59e2cb83-94eb-55bc-a6c2-53535656bd49
+
+	/// Etiqueta de las barras por origen: país, valor en millones y participación.
+	measure 'Etichetta origine' =
+			SELECTEDVALUE ( Origine[Origine] ) & " | "
+			    & FORMAT ( [FOB USD] / 1000000, "#,0.00", "it-IT" ) & " M USD | "
+			    & FORMAT ( [% FOB], "0.00%", "it-IT" )
+		displayFolder: 5. Etichette
+		lineageTag: 635e39d6-589e-5ba2-8b3b-4eb4a5e531e9
+
+	/// Etiqueta de las barras por aduana: aduana y país, valor en millones y participación.
+	measure 'Etichetta dogana' =
+			SELECTEDVALUE ( Dogana[Dogana e paese] ) & " | "
+			    & FORMAT ( [FOB USD] / 1000000, "#,0.00", "it-IT" ) & " M USD | "
+			    & FORMAT ( [% FOB], "0.00%", "it-IT" )
+		displayFolder: 5. Etichette
+		lineageTag: 7958528f-0cc9-556e-ae1b-164647316d85
+
+	/// Etiqueta de las barras por importador: nombre, valor en millones y participación.
+	measure 'Etichetta importatore' =
+			SELECTEDVALUE ( Importatore[Importatore] ) & " | "
+			    & FORMAT ( [FOB USD] / 1000000, "#,0.00", "it-IT" ) & " M USD | "
+			    & FORMAT ( [% FOB], "0.00%", "it-IT" )
+		displayFolder: 5. Etichette
+		lineageTag: b4fe2aed-52da-56d9-aaff-084af2323666
+
+	/// Bandera del origen señalado, para el tooltip. Solo cuando hay un único país en contexto.
+	measure 'Bandiera selezionata' = IF ( HASONEVALUE ( Origine[Origine ID] ), SELECTEDVALUE ( Origine[Bandiera] ) )
+		displayFolder: 6. Tooltip
+		lineageTag: 2503b7a9-fa6c-53de-b95f-457f44e1a178
+		dataCategory: ImageUrl
+
+	/// Nombre del origen señalado, para el tooltip.
+	measure 'Origine selezionata' = SELECTEDVALUE ( Origine[Origine] )
+		displayFolder: 6. Tooltip
+		lineageTag: 9b5d7d69-2fa1-5900-b504-75adca99124d
+
+	/// Valor importado en millones de dólares, como texto corto para el tooltip.
+	measure 'FOB USD (M)' = FORMAT ( [FOB USD] / 1000000, "#,0.0", "it-IT" ) & " M"
+		displayFolder: 6. Tooltip
+		lineageTag: 8c609b6c-9158-5fc1-82c4-82fcb989fc72
+
+	/// Peso bruto en millones de kilos, como texto corto para el tooltip.
+	measure 'Kg lordi (M)' = FORMAT ( [Kg lordi] / 1000000, "#,0.0", "it-IT" ) & " M"
+		displayFolder: 6. Tooltip
+		lineageTag: f4a4654c-3f7e-5d4f-a09f-c125c311db4b
+
+	partition Misure = m
+		mode: import
+		queryGroup: Auxiliares
+		source =
+				let
+				    // Tabla sin filas ni columnas: solo agrupa las medidas del modelo
+				    Origen = #table(type table [Columna = text], {}),
+				    SinColumnas = Table.RemoveColumns(Origen, {"Columna"})
+				in
+				    SinColumnas
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,216 @@
+/// Carpeta data del repositorio, con la barra final. Cambiala si clonás el repo en otra ruta.
+expression CarpetaDatos = "C:\Proyectos\Latam_Imports_Market_Intelligence\data\" meta [IsParameterQuery = true, Type = "Text", IsParameterQueryRequired = true]
+	lineageTag: f3bb0020-e88b-5bbb-9181-1c1cd2dd96d6
+	queryGroup: Parámetros
+
+	annotation PBI_ResultType = Text
+
+	annotation PBI_NavigationStepName = Navegación
+
+/// Lee un CSV en UTF-8 separado por comas y promueve la primera fila a encabezados.
+expression fnLeerCsv =
+		let
+		    fnLeerCsv = (contenido as binary) as table =>
+		        let
+		            Csv = Csv.Document(contenido, [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+		            Encabezados = Table.PromoteHeaders(Csv, [PromoteAllScalars = true])
+		        in
+		            Encabezados,
+		    Documentacion = type function (contenido as (type binary meta [Documentation.FieldCaption = "Contenido del archivo"])) as table
+		        meta [
+		            Documentation.Name = "fnLeerCsv",
+		            Documentation.LongDescription = "Abre un CSV en UTF-8 separado por comas, con comillas al estilo CSV, y usa la primera fila como encabezados. Todas las columnas salen como texto."
+		        ]
+		in
+		    Value.ReplaceType(fnLeerCsv, Documentacion)
+	lineageTag: 70032cc1-3c0d-5e70-8aaa-9f8abf85c634
+	queryGroup: Funciones
+
+	annotation PBI_ResultType = Function
+
+/// Lleva la exportación de un país al esquema común, según el mapa de columnas de ese país.
+expression fnArmonizar =
+		let
+		    fnArmonizar = (tabla as table, pais as text) as table =>
+		        let
+		            Campos = {"ID operazione", "Data", "Codice HS", "Importatore", "Dogana", "Trasporto", "Origine", "Valore USD", "Kg lordi"},
+		            // Columnas de origen que el mapa prevé para este país y que este archivo trae
+		            Mapa = Table.SelectRows(MapaColumnas, each [country] = Text.Lower(pais) and List.Contains(Table.ColumnNames(tabla), [source_column])),
+		            // Un campo puede tener más de una columna candidata, porque Softrade cambió nombres entre años: vale la primera que exista
+		            UnaPorCampo = Table.Distinct(Mapa, {"field"}),
+		            Elegidas = Table.SelectColumns(tabla, UnaPorCampo[source_column]),
+		            Renombradas = Table.RenameColumns(Elegidas, List.Zip({UnaPorCampo[source_column], UnaPorCampo[field]})),
+		            // Lo que el país no informa queda vacío, así todas las tablas tienen las mismas columnas
+		            Faltantes = List.Difference(Campos, Table.ColumnNames(Renombradas)),
+		            Completa = List.Accumulate(Faltantes, Renombradas, (t, campo) => Table.AddColumn(t, campo, each null)),
+		            Ordenada = Table.SelectColumns(Completa, Campos)
+		        in
+		            Ordenada,
+		    Documentacion = type function (
+		            tabla as (type table meta [Documentation.FieldCaption = "Exportación de Softrade, con sus encabezados originales"]),
+		            pais as (type text meta [Documentation.FieldCaption = "Código del país de destino", Documentation.SampleValues = {"UY", "MX"}])
+		        ) as table
+		        meta [
+		            Documentation.Name = "fnArmonizar",
+		            Documentation.LongDescription = "Cada país de Softrade tiene su propio formato, y algunos lo cambiaron de un año a otro. La función elige, para cada campo del esquema común, la primera columna de origen que exista en el archivo (data/reference/column_map.csv), la renombra y completa con vacíos los campos que ese país no informa. Sumar un país o absorber un cambio de formato es agregar filas a ese CSV, sin tocar código."
+		        ]
+		in
+		    Value.ReplaceType(fnArmonizar, Documentacion)
+	lineageTag: 771b0b2e-9d89-527e-b14c-7aae90f9a75f
+	queryGroup: Funciones
+
+	annotation PBI_ResultType = Function
+
+/// Normaliza el nombre del importador: espacios, mayúsculas y nombres no informados.
+expression fnEmpresa =
+		let
+		    fnEmpresa = (nombre as nullable text) as text =>
+		        let
+		            Texto = Text.Combine(List.Select(Text.Split(Text.Trim(nombre ?? ""), " "), each _ <> ""), " "),
+		            // Formas en que las aduanas dicen que no informan al importador
+		            SinNombre = {"", "NO DISPONIBLE", "NO DETERMINADO", "NO DECLARADO", "NO IDENTIFICADO", "DESCONOCIDO", "RESERVADO", "S/D", "N/D"},
+		            Resultado = if List.Contains(SinNombre, Text.Upper(Texto)) then "Non identificato" else Text.Proper(Texto)
+		        in
+		            Resultado,
+		    Documentacion = type function (nombre as (type nullable text meta [Documentation.FieldCaption = "Importador tal como lo publica la aduana"])) as text
+		        meta [
+		            Documentation.Name = "fnEmpresa",
+		            Documentation.LongDescription = "Quita espacios repetidos y pasa el nombre a mayúscula inicial, para que el mismo importador no aparezca dos veces por diferencias de tipeo. Los registros sin importador informado quedan como Non identificato.",
+		            Documentation.Examples = {
+		                [Description = "Espacios y mayúsculas", Code = "fnEmpresa(""ACETI   OXIGENO S.A."")", Result = """Aceti Oxigeno S.A."""],
+		                [Description = "Importador no informado", Code = "fnEmpresa(""No disponible"")", Result = """Non identificato"""]
+		            }
+		        ]
+		in
+		    Value.ReplaceType(fnEmpresa, Documentacion)
+	lineageTag: 2f4d3eef-5a48-5ff3-abaf-3763c3ae0acf
+	queryGroup: Funciones
+
+	annotation PBI_ResultType = Function
+
+/// Normaliza el nombre de la aduana o del puerto de ingreso.
+expression fnAduana =
+		let
+		    fnAduana = (nombre as nullable text) as text =>
+		        let
+		            Texto = Text.Upper(Text.Combine(List.Select(Text.Split(Text.Trim(nombre ?? ""), " "), each _ <> ""), " ")),
+		            SinPrefijo = if Text.StartsWith(Texto, "ADUANAS DE ") then Text.AfterDelimiter(Texto, "ADUANAS DE ") else Texto,
+		            Resultado = if List.Contains({"", "NO DISPONIBLE", "NO DECLARADO", "DESCONOCIDO"}, SinPrefijo) then "Non disponibile" else Text.Proper(SinPrefijo)
+		        in
+		            Resultado,
+		    Documentacion = type function (nombre as (type nullable text meta [Documentation.FieldCaption = "Aduana o puerto tal como viene de Softrade"])) as text
+		        meta [
+		            Documentation.Name = "fnAduana",
+		            Documentation.LongDescription = "Quita el prefijo ADUANAS DE, unifica mayúsculas y deja Non disponibile cuando la fuente no publica la aduana (por ejemplo, Uruguay desde el 23/10/2020)."
+		        ]
+		in
+		    Value.ReplaceType(fnAduana, Documentacion)
+	lineageTag: 07583397-90fc-5b8c-a992-c09227e574ab
+	queryGroup: Funciones
+
+	annotation PBI_ResultType = Function
+
+/// Listado de la carpeta data. Es el único acceso a disco del modelo: todas las demás consultas parten de acá.
+expression ArchivosDatos =
+		let
+		    Origen = Folder.Files(CarpetaDatos),
+		    Columnas = Table.SelectColumns(Origen, {"Name", "Extension", "Folder Path", "Content"})
+		in
+		    Columnas
+	lineageTag: 780dafd0-d3b3-5f5b-8ee3-82ec5038a103
+	queryGroup: Origen
+
+	annotation PBI_ResultType = Table
+
+/// Qué columna de cada exportación corresponde a cada campo del esquema común (data/reference/column_map.csv).
+expression MapaColumnas =
+		let
+		    Archivo = Table.SelectRows(ArchivosDatos, each [Name] = "column_map.csv"){0}[Content],
+		    Tabla = fnLeerCsv(Archivo),
+		    Tipos = Table.TransformColumnTypes(Tabla, {{"country", type text}, {"field", type text}, {"source_column", type text}}),
+		    EnMemoria = Table.Buffer(Tipos)
+		in
+		    EnMemoria
+	lineageTag: 507791c7-e35d-5e3b-93fb-d8849ab63389
+	queryGroup: Origen
+
+	annotation PBI_ResultType = Table
+
+/// Equivalencias entre el medio de transporte que escribe cada aduana y su nombre único en italiano (data/reference/transport_modes.csv).
+expression MapaTransporte =
+		let
+		    Archivo = Table.SelectRows(ArchivosDatos, each [Name] = "transport_modes.csv"){0}[Content],
+		    Tabla = fnLeerCsv(Archivo),
+		    Tipos = Table.TransformColumnTypes(Tabla, {{"source_value", type text}, {"transport_it", type text}, {"sort_order", Int64.Type}}),
+		    EnMemoria = Table.Buffer(Tipos)
+		in
+		    EnMemoria
+	lineageTag: b4477a9a-8ba9-5a9c-942c-2f25661feb83
+	queryGroup: Origen
+
+	annotation PBI_ResultType = Table
+
+/// Nombres de país tal como los escribe cada aduana, con su nombre único en español, italiano e inglés y el código ISO (data/reference/countries.csv).
+expression MapaPaises =
+		let
+		    Archivo = Table.SelectRows(ArchivosDatos, each [Name] = "countries.csv"){0}[Content],
+		    Tabla = fnLeerCsv(Archivo),
+		    Tipos = Table.TransformColumnTypes(Tabla, {{"source_name", type text}, {"country_es", type text}, {"country_it", type text}, {"country_en", type text}, {"iso2", type text}}),
+		    EnMemoria = Table.Buffer(Tipos)
+		in
+		    EnMemoria
+	lineageTag: 5cd84dc8-d481-58d2-92a2-0858f742f125
+	queryGroup: Origen
+
+	annotation PBI_ResultType = Table
+
+/// Banderas en PNG (data/flags) convertidas a texto, para incrustarlas en el modelo y que se vean sin conexión.
+expression Banderas =
+		let
+		    Archivos = Table.SelectRows(ArchivosDatos, each Text.EndsWith([Folder Path], "\flags\") and [Extension] = ".png"),
+		    Iso = Table.AddColumn(Archivos, "iso2", each Text.Upper(Text.BeforeDelimiter([Name], ".")), type text),
+		    Imagen = Table.AddColumn(Iso, "Bandiera", each "data:image/png;base64," & Binary.ToText([Content], BinaryEncoding.Base64), type text),
+		    Columnas = Table.Buffer(Table.SelectColumns(Imagen, {"iso2", "Bandiera"}))
+		in
+		    Columnas
+	lineageTag: 546b152f-e2d3-5335-99f3-356fff8a23e8
+	queryGroup: Origen
+
+	annotation PBI_ResultType = Table
+
+/// Importaciones de los diez países en un solo esquema, limpias. Base de la tabla de hechos y de las dimensiones; no se carga al modelo.
+expression Operaciones =
+		let
+		    // Un CSV por país y año en data/raw. El nombre trae el país y el reporte de Softrade: uy_import_2024.csv
+		    Crudos = Table.SelectRows(ArchivosDatos, each Text.EndsWith([Folder Path], "\raw\") and [Extension] = ".csv"),
+		    ConPais = Table.AddColumn(Crudos, "Destinazione ID", each Text.Upper(Text.BeforeDelimiter([Name], "_")), type text),
+		    ConReporte = Table.AddColumn(ConPais, "Fonte", each Text.BetweenDelimiters([Name], "_", "_"), type text),
+		    // Cada archivo se lleva al esquema común con el mapa de columnas de su país
+		    Armonizados = Table.AddColumn(ConReporte, "Datos", each fnArmonizar(fnLeerCsv([Content]), [Destinazione ID]), type table),
+		    Unidos = Table.ExpandTableColumn(Table.SelectColumns(Armonizados, {"Destinazione ID", "Fonte", "Datos"}), "Datos", {"ID operazione", "Data", "Codice HS", "Importatore", "Dogana", "Trasporto", "Origine", "Valore USD", "Kg lordi"}),
+		    // Los CSV usan punto decimal y fechas ISO: tipos con cultura en-US
+		    Tipos = Table.TransformColumnTypes(Unidos, {{"ID operazione", type text}, {"Data", type date}, {"Codice HS", type text}, {"Importatore", type text}, {"Dogana", type text}, {"Trasporto", type text}, {"Origine", type text}, {"Valore USD", type number}, {"Kg lordi", type number}}, "en-US"),
+		    // Softrade repite líneas de subítem sin valor ni peso: no aportan nada
+		    ConDatos = Table.SelectRows(Tipos, each [Data] <> null and (([Valore USD] ?? 0) <> 0 or ([Kg lordi] ?? 0) <> 0)),
+		    // Equivalencias de transporte y de país como registros: una búsqueda directa por fila, sin combinar tablas
+		    Modos = Record.FromList(MapaTransporte[transport_it], MapaTransporte[source_value]),
+		    Paises = Record.FromList(MapaPaises[country_es], MapaPaises[source_name]),
+		    Limpios = Table.TransformColumns(ConDatos, {
+		        // Posición arancelaria a 6 dígitos del Sistema Armonizado: es lo que comparten las nomenclaturas de los diez países
+		        {"Codice HS", each Text.Start(Text.Select(_ ?? "", {"0".."9"}), 6), type text},
+		        {"Importatore", fnEmpresa, type text},
+		        {"Dogana", fnAduana, type text},
+		        {"Trasporto", each Record.FieldOrDefault(Modos, Text.Upper(Text.Trim(_ ?? "")), "Non identificato"), type text},
+		        {"Origine", each Record.FieldOrDefault(Paises, Text.Upper(Text.Trim(_ ?? "")), "No identificado"), type text}
+		    }),
+		    // Claves de las dimensiones que dependen del destino: el mismo nombre puede existir en dos países
+		    ClaveImportador = Table.AddColumn(Limpios, "Importatore ID", each [Destinazione ID] & " | " & [Importatore], type text),
+		    ClaveAduana = Table.AddColumn(ClaveImportador, "Dogana ID", each [Destinazione ID] & " | " & [Dogana], type text),
+		    Renombradas = Table.RenameColumns(ClaveAduana, {{"Origine", "Origine ID"}})
+		in
+		    Renombradas
+	lineageTag: 2015f4bb-aa70-5e95-afbf-3fc5d58cd1d9
+	queryGroup: Origen
+
+	annotation PBI_ResultType = Table
+

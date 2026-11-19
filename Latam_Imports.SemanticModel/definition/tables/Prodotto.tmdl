@@ -1,0 +1,47 @@
+/// Posiciones arancelarias del estudio, a 6 dígitos del Sistema Armonizado.
+table Prodotto
+	lineageTag: ba2e95a0-6120-50d7-8ba8-a777133b7c19
+
+	/// Posición arancelaria a 6 dígitos.
+	column 'Codice HS'
+		dataType: string
+		isKey
+		lineageTag: cbaa84fc-3252-52bb-94bd-ed4e822388e0
+		summarizeBy: none
+		sourceColumn: Codice HS
+
+		annotation SummarizationSetBy = User
+
+	/// Nombre corto del producto, con su posición.
+	column Prodotto
+		dataType: string
+		lineageTag: 499d2908-3743-5a7c-bd9e-48dca3cd6c9d
+		summarizeBy: none
+		sourceColumn: Prodotto
+
+		annotation SummarizationSetBy = User
+
+	/// Descripción de la posición arancelaria.
+	column Descrizione
+		dataType: string
+		lineageTag: d1344376-ebe8-5d79-9129-dee8f8e1ff9a
+		summarizeBy: none
+		sourceColumn: Descrizione
+
+		annotation SummarizationSetBy = User
+
+	partition Prodotto = m
+		mode: import
+		queryGroup: Dimensiones
+		source =
+				let
+				    Archivo = Table.SelectRows(ArchivosDatos, each [Name] = "products.csv"){0}[Content],
+				    Tabla = fnLeerCsv(Archivo),
+				    Nombres = Table.RenameColumns(Tabla, {{"hs6", "Codice HS"}, {"product_it", "Prodotto"}, {"description_it", "Descrizione"}}),
+				    Columnas = Table.SelectColumns(Nombres, {"Codice HS", "Prodotto", "Descrizione"}),
+				    Tipos = Table.TransformColumnTypes(Columnas, {{"Codice HS", type text}, {"Prodotto", type text}, {"Descrizione", type text}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

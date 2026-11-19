@@ -1,0 +1,40 @@
+/// Medios de transporte, con un nombre único en italiano para las distintas formas en que los escribe cada aduana.
+table Trasporto
+	lineageTag: 0199679c-2b59-5dea-aabe-4601a7e9ebc3
+
+	/// Medio de transporte.
+	column Trasporto
+		dataType: string
+		isKey
+		lineageTag: 75d66d53-35a5-5d60-9b42-0c216d3472da
+		summarizeBy: none
+		sourceColumn: Trasporto
+		sortByColumn: Ordine
+
+		annotation SummarizationSetBy = User
+
+	/// Orden de presentación.
+	column Ordine
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8acfd2cc-27cd-599c-a342-8a87dc6c82db
+		summarizeBy: none
+		sourceColumn: Ordine
+
+		annotation SummarizationSetBy = User
+
+	partition Trasporto = m
+		mode: import
+		queryGroup: Dimensiones
+		source =
+				let
+				    Unicos = Table.Distinct(Table.SelectColumns(MapaTransporte, {"transport_it", "sort_order"}), {"transport_it"}),
+				    Nombres = Table.RenameColumns(Unicos, {{"transport_it", "Trasporto"}, {"sort_order", "Ordine"}}),
+				    Tipos = Table.TransformColumnTypes(Nombres, {{"Trasporto", type text}, {"Ordine", Int64.Type}}),
+				    Orden = Table.Sort(Tipos, {{"Ordine", Order.Ascending}})
+				in
+				    Orden
+
+	annotation PBI_ResultType = Table
+

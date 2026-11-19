@@ -1,0 +1,11 @@
+code,country_es,country_it,country_en,report,value_basis,importer_name,notes
+AR,Argentina,Argentina,Argentina,Importaciones Detalladas,FOB,Dichiarato,
+BR,Brasil,Brasile,Brazil,Cargas Marítimas Ingresos,Valore stimato,Consegnatario,"Solo carichi marittimi, valori stimati, base ferma a novembre 2023. Secondo la fonte, i dati vengono da fonti internazionali non ufficiali. Il consegnatario può essere uno spedizioniere."
+CL,Chile,Cile,Chile,Importaciones,FOB,Dichiarato,
+CO,Colombia,Colombia,Colombia,Importaciones e Histórico Importaciones,FOB,Dichiarato (probabile fino al 2021),"Il 2020 e il 2021 vengono dalla base storica, dove il nome dell'importatore è probabile."
+EC,Ecuador,Ecuador,Ecuador,Importaciones,FOB,Dichiarato,Il peso è netto: la fonte non pubblica il peso lordo.
+MX,México,Messico,Mexico,Cargas Totales Ingresos,CIF,Dichiarato,Il valore è CIF: la fonte non pubblica il FOB.
+PA,Panamá,Panama,Panama,Importaciones,FOB,Dichiarato,
+PE,Perú,Perù,Peru,Importaciones,FOB,Dichiarato,
+PY,Paraguay,Paraguay,Paraguay,Importaciones,FOB,Probabile,Importatore stimato dalla fonte. Da novembre 2024 la dogana non lo pubblica più.
+UY,Uruguay,Uruguay,Uruguay,Importaciones,FOB,Dichiarato,Dal 23 ottobre 2020 non viene più pubblicata la dogana di ingresso.

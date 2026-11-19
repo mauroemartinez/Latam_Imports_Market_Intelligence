@@ -1,0 +1,109 @@
+/// Países importadores (diez mercados de América Latina) y las características de la fuente de cada uno.
+table Destinazione
+	lineageTag: 98b06e8c-b505-5012-82ae-9b6bb9c6a0a6
+
+	/// Código de dos letras del país.
+	column 'Destinazione ID'
+		dataType: string
+		isHidden
+		isKey
+		lineageTag: b3825b74-9c69-5b50-81a0-b54755c649f9
+		summarizeBy: none
+		sourceColumn: Destinazione ID
+
+		annotation SummarizationSetBy = User
+
+	/// País importador, en italiano.
+	column Destinazione
+		dataType: string
+		lineageTag: 484b1c35-ea07-5721-ba51-e78ac63024a8
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: Destinazione
+
+		annotation SummarizationSetBy = User
+
+	/// País importador en inglés: lo usa el mapa para ubicarlo.
+	column 'Paese (EN)'
+		dataType: string
+		isHidden
+		lineageTag: b06db671-978b-57d0-add5-f0c96b719ba3
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: Paese (EN)
+
+		annotation SummarizationSetBy = User
+
+	/// Reporte de Softrade que se usa para ese país.
+	column Fonte
+		dataType: string
+		lineageTag: 17760a40-082e-5657-8fd7-437ab94236bf
+		summarizeBy: none
+		sourceColumn: Fonte
+
+		annotation SummarizationSetBy = User
+
+	/// Qué mide el valor en dólares en ese país: FOB, CIF o valor estimado.
+	column 'Base valore'
+		dataType: string
+		lineageTag: 6ccbebfd-ca20-5bcf-835b-4729e486820f
+		summarizeBy: none
+		sourceColumn: Base valore
+
+		annotation SummarizationSetBy = User
+
+	/// Cómo publica la fuente al importador: declarado, probable o consignatario del embarque.
+	column 'Nome importatore'
+		dataType: string
+		lineageTag: a1f146ba-3846-50e6-84f2-f0541436a821
+		summarizeBy: none
+		sourceColumn: Nome importatore
+
+		annotation SummarizationSetBy = User
+
+	/// Aclaraciones de la fuente para ese país.
+	column Note
+		dataType: string
+		lineageTag: 67249c18-3f9f-526c-8a12-bdc28d54fb06
+		summarizeBy: none
+		sourceColumn: Note
+
+		annotation SummarizationSetBy = User
+
+	/// Primera fecha con datos cargados para ese país.
+	column 'Dati da' = CALCULATE ( MIN ( Importazioni[Data] ) )
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 00d2a0a2-0642-5c7f-bb04-5aaa0cc28451
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Última fecha con datos cargados para ese país. La variación interanual solo compara años que el país tiene cargados.
+	column 'Dati fino a' = CALCULATE ( MAX ( Importazioni[Data] ) )
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 5bae1c74-9bc9-594b-9f79-d60e462916e0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = User
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition Destinazione = m
+		mode: import
+		queryGroup: Dimensiones
+		source =
+				let
+				    Archivo = Table.SelectRows(ArchivosDatos, each [Name] = "destinations.csv"){0}[Content],
+				    Tabla = fnLeerCsv(Archivo),
+				    Nombres = Table.RenameColumns(Tabla, {{"code", "Destinazione ID"}, {"country_it", "Destinazione"}, {"country_en", "Paese (EN)"}, {"report", "Fonte"}, {"value_basis", "Base valore"}, {"importer_name", "Nome importatore"}, {"notes", "Note"}}),
+				    Columnas = Table.SelectColumns(Nombres, {"Destinazione ID", "Destinazione", "Paese (EN)", "Fonte", "Base valore", "Nome importatore", "Note"}),
+				    Tipos = Table.TransformColumnTypes(Columnas, {{"Destinazione ID", type text}, {"Destinazione", type text}, {"Paese (EN)", type text}, {"Fonte", type text}, {"Base valore", type text}, {"Nome importatore", type text}, {"Note", type text}})
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

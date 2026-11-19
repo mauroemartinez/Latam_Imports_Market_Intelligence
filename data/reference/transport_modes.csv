@@ -1,0 +1,62 @@
+source_value,transport_it,sort_order
+ACUATICA,Marittimo,1
+ACUATICO,Marittimo,1
+ACUÁTICA,Marittimo,1
+ACUÁTICO,Marittimo,1
+MARITIMA,Marittimo,1
+MARITIME,Marittimo,1
+MARITIMO,Marittimo,1
+MARÍTIMA,Marittimo,1
+MARÍTIMO,Marittimo,1
+CAMION,Terrestre,2
+CAMIÓN,Terrestre,2
+CARRETERA,Terrestre,2
+CARRETERO,Terrestre,2
+CARRETERO-TERRESTRE,Terrestre,2
+ROAD,Terrestre,2
+TERRESTRE,Terrestre,2
+TRUCK,Terrestre,2
+00011,Aereo,3
+11,Aereo,3
+AEREA,Aereo,3
+AEREO,Aereo,3
+AIR,Aereo,3
+AVION,Aereo,3
+AVIÓN,Aereo,3
+AÉREA,Aereo,3
+AÉREO,Aereo,3
+COURIER,Aereo,3
+POSTAL,Aereo,3
+VIA POSTAL,Aereo,3
+VÍA POSTAL,Aereo,3
+FERROCARRIL,Ferroviario,4
+FERROVIARIA,Ferroviario,4
+FERROVIARIO,Ferroviario,4
+FERROVIARIO DE DOBLE ESTIBA,Ferroviario,4
+RAIL,Ferroviario,4
+FLUVIAL,Fluviale,5
+LACUSTRE,Fluviale,5
+MULTIMODAL,Multimodale,6
+MEDIOS PROPIOS,Mezzi propri,7
+PROPIOS MEDIOS,Mezzi propri,7
+00019,Altro,8
+19,Altro,8
+DUCTO,Altro,8
+OLEODUCTO,Altro,8
+OTRA,Altro,8
+OTRAS VIAS,Altro,8
+OTRAS VIAS (5),Altro,8
+OTRAS VÍAS,Altro,8
+OTRO,Altro,8
+OTROS,Altro,8
+TUBERIA,Altro,8
+TUBERÍA,Altro,8
+DESCONOCIDO,Non identificato,9
+NO DECLARADO,Non identificato,9
+NO DETERMINADO,Non identificato,9
+NO DISPONIBLE,Non identificato,9
+NO IDENTIFICADO,Non identificato,9
+NO SE DECLARA MEDIO DE TRANSP,Non identificato,9
+NO SE DECLARA MEDIO DE TRANSPORTE,Non identificato,9
+SIN INFORMACION,Non identificato,9
+SIN INFORMACIÓN,Non identificato,9
